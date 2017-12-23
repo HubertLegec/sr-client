@@ -3,12 +3,15 @@ import * as ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {Route, Switch} from 'react-router';
 import createHistory from 'history/createBrowserHistory';
-import {MainPage} from './containers/MainPage';
+import {StartPage} from "./containers/StartPage";
+import {FileListPage} from './containers/FileListPage';
+import {FilePage} from "./containers/FilePage";
 import {routerMiddleware, ConnectedRouter} from 'react-router-redux';
 import {composeWithDevTools} from "redux-devtools-extension";
 import {applyMiddleware, createStore, Store} from "redux";
 import rootReducer, {RootState} from "./reducers/index";
 import {App} from "./containers/App";
+import {NavBar} from "./components/NavBar";
 
 function configureStore(history, initialState?: RootState) {
     let middleware = applyMiddleware(routerMiddleware(history));
@@ -31,9 +34,12 @@ const store = configureStore(history);
 ReactDOM.render(
     <Provider store={store}>
         <App>
+            <NavBar/>
             <ConnectedRouter history={history}>
                 <Switch>
-                    <Route path="/" component={MainPage}/>
+                    <Route path="/" component={StartPage}/>
+                    <Route path="/files" component={FileListPage}/>
+                    <Route path="/files/:fileName" component={FilePage}/>
                 </Switch>
             </ConnectedRouter>
         </App>

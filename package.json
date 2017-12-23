@@ -42,7 +42,12 @@
     "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
+    "@types/react-bootstrap": "^0.31.8",
+    "classnames": "^2.2.5",
+    "history": "^4.7.2",
+    "lodash": "^4.17.4",
     "react": "^16.2.0",
+    "react-bootstrap": "^0.31.5",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
@@ -50,9 +55,6 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "sass-loader": "^6.0.6",
-    "socket.io-client": "^2.0.4",
-    "classnames": "^2.2.5",
-    "history": "^4.7.2",
-    "lodash": "^4.17.4"
+    "socket.io-client": "^2.0.4"
   }
 }
