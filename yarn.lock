@@ -65,6 +65,10 @@
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@types/redux-actions/-/redux-actions-2.2.3.tgz#a11777808ec37ef7246f70bed770cab3510cf926"
 
+"@types/socket.io-client@^1.4.32":
+  version "1.4.32"
+  resolved "https://registry.yarnpkg.com/@types/socket.io-client/-/socket.io-client-1.4.32.tgz#988a65a0386c274b1c22a55377fab6a30789ac14"
+
 "@types/source-map@*":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@types/source-map/-/source-map-0.5.2.tgz#973459e744cc7445c85b97f770275b479b138e08"

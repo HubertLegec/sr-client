@@ -37,7 +37,7 @@ ReactDOM.render(
             <NavBar/>
             <ConnectedRouter history={history}>
                 <Switch>
-                    <Route path="/" component={StartPage}/>
+                    <Route path="/" exact component={StartPage}/>
                     <Route path="/files" component={FileListPage}/>
                     <Route path="/files/:fileName" component={FilePage}/>
                 </Switch>

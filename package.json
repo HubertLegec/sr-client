@@ -20,6 +20,8 @@
     "@types/redux-actions": "2.2.3",
     "@types/webpack": "3.8.1",
     "@types/webpack-env": "1.13.3",
+    "@types/react-bootstrap": "^0.31.8",
+    "@types/socket.io-client": "^1.4.32",
     "awesome-typescript-loader": "^3.4.1",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.2",
@@ -42,7 +44,6 @@
     "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
-    "@types/react-bootstrap": "^0.31.8",
     "classnames": "^2.2.5",
     "history": "^4.7.2",
     "lodash": "^4.17.4",
