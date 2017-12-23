@@ -2,11 +2,12 @@ import * as _ from "lodash";
 import * as React from "react";
 import {RootState} from "../reducers";
 import {connect} from "react-redux";
-import {ServerDef} from "../reducers/start";
+import {ServerDef, ServerStatus} from "../reducers/start";
 import {Button, ButtonToolbar, Col, FormControl, Grid, ListGroup, Panel, Row} from "react-bootstrap";
 import {bindActionCreators} from "redux";
 import * as StartActions from "../actions/start";
 import {ServerRow} from "../components/ServerRow";
+import {WebsocketConnection} from "../websockets/WebsocketConnection";
 
 interface StartPageDataProps {
     username: string;
@@ -19,7 +20,8 @@ interface StartPageEventProps {
 
 type StartPageProps = StartPageDataProps & StartPageEventProps;
 
-interface StartPageState {}
+interface StartPageState {
+}
 
 export class StartPageUI extends React.Component<StartPageProps, StartPageState> {
     render() {
@@ -49,10 +51,30 @@ export class StartPageUI extends React.Component<StartPageProps, StartPageState>
             </Row>
             <Row className="show-grid">
                 <ButtonToolbar>
-                    <Button bsStyle="primary">Connect</Button>
+                    <Button bsStyle="primary" onClick={() => this.connectToServers()}>Connect</Button>
                 </ButtonToolbar>
             </Row>
         </Grid>;
+    }
+
+    private connectToServers() {
+        const {servers, actions, username} = this.props;
+        const {updateServerState, addWebsocketConnection} = actions;
+        console.log('--- Connect to servers ---', _.cloneDeep(servers));
+        servers
+            .map(s => {
+                updateServerState({id: s.id, status: ServerStatus.CONNECTING});
+                return s;
+            })
+            .map(s => {
+                const c = new WebsocketConnection(s, username, updateServerState);
+                return c;
+            })
+            .map(c => {
+                c.connect();
+                return c;
+            })
+            .forEach(c => addWebsocketConnection(c));
     }
 }
 
