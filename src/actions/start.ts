@@ -1,7 +1,7 @@
 import {createAction} from "redux-actions";
 import * as Actions from '../constants/actions';
 import {ServerDef, ServerStatus} from "../reducers/start";
-import {WebsocketConnection} from "../websockets/WebsocketConnection";
+import {WebsocketConnection} from "../utils/WebsocketConnection";
 
 export const addServer = createAction<ServerDef>(Actions.ADD_SERVER);
 export const removeServer = createAction<ServerDef>(Actions.DELETE_SERVER);

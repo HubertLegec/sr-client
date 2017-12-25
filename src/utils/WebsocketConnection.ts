@@ -13,7 +13,7 @@ export class WebsocketConnection {
         this.socket = io(`http://${server.address}:${server.port}`, {autoConnect: false});
         this.socket.on('connect', () => {
             console.log(`Server #${this.serverId} connected`);
-            this.socket.emit('authorize', {userId: username});
+            this.socket.emit('authorize', {userId: this.username});
             updateServerState({id: this.serverId, status: ServerStatus.CONNECTED});
         })
     }

@@ -6,11 +6,12 @@ import * as ListGroup from "react-bootstrap/lib/ListGroup";
 import {FileRow} from "./FileRow";
 
 interface ServerFilesProps {
-    server: string;
+    server: number;
     eventKey: number;
     files: File[];
     onClick: (file: File) => void;
     onRemoveClick: (file: File) => void;
+    onCreateClick: (file: File) => void;
 }
 
 interface ServerFilesState {}
@@ -18,7 +19,7 @@ interface ServerFilesState {}
 export class ServerFiles extends React.Component<ServerFilesProps, ServerFilesState> {
     render() {
         const {server, files, onClick, onRemoveClick, eventKey} = this.props;
-        return <Panel collapsible eventKey={eventKey} header={<h3>{server}</h3>}>
+        return <Panel collapsible eventKey={eventKey} header={<h3>{`Server ${server}`}</h3>}>
             <ListGroup fill>
                 {_.map(files, (file, idx) =>
                     <FileRow key={idx}
@@ -26,7 +27,15 @@ export class ServerFiles extends React.Component<ServerFilesProps, ServerFilesSt
                              onClick={onClick}
                              onRemove={onRemoveClick}/>
                 )}
+                <FileRow isNewElement={true}
+                         onCreate={f => this.onCreateFile(f)}/>
             </ListGroup>
         </Panel>
+    }
+
+    private onCreateFile(file: File) {
+        const {onCreateClick, server} = this.props;
+        file.serverId = server;
+        onCreateClick(file);
     }
 }

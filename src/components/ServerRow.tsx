@@ -51,7 +51,7 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
                              onChange={e => this.onChangeInput("port", e)}/>
             </Col>
             <Col xs={2} md={2}>
-                <Button onClick={() => this.onSaveServer()}>
+                <Button disabled={_.isEmpty(this.state.port)} onClick={() => this.onSaveServer()}>
                     <Glyphicon glyph="glyphicon glyphicon-ok-sign"/>
                 </Button>
             </Col>
@@ -61,15 +61,18 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
     private renderExisting() {
         const {onRemove, server} = this.props;
         return <Row className="show-grid">
-            <Col xs={5} md={5}>
+            <Col xs={4} md={4}>
                 <FormControl.Static>
                     {server.address}
                 </FormControl.Static>
             </Col>
-            <Col xs={5} md={5}>
+            <Col xs={4} md={4}>
                 <FormControl.Static>
                     {server.port}
                 </FormControl.Static>
+            </Col>
+            <Col xs={2} md={2}>
+                {this.renderStatusImage()}
             </Col>
             <Col xs={2} md={2}>
                 <Button onClick={() => onRemove(server)}>
@@ -77,6 +80,20 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
                 </Button>
             </Col>
         </Row>;
+    }
+
+    private renderStatusImage() {
+        const {status} = this.props.server;
+        switch (status) {
+            case ServerStatus.CREATED:
+                return <Glyphicon glyph="glyphicon glyphicon-asterisk"/>;
+            case ServerStatus.CONNECTING:
+                return <Glyphicon glyph="glyphicon glyphicon-refresh"/>;
+            case ServerStatus.CONNECTED:
+                return <Glyphicon glyph="glyphicon glyphicon-ok"/>;
+            case ServerStatus.DISCONNECTED:
+                return <Glyphicon glyph="glyphicon glyphicon-alert"/>;
+        }
     }
 
     private onChangeInput(field: string, event: any) {

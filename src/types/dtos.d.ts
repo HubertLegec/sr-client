@@ -1,7 +1,7 @@
 
 export interface File {
     name: string;
-    server: string;
+    serverId?: number;
 }
 
 export interface Record {

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import {handleActions} from 'redux-actions';
 import * as Actions from '../constants/actions';
-import {WebsocketConnection} from "../websockets/WebsocketConnection";
+import {WebsocketConnection} from "../utils/WebsocketConnection";
 
 export enum ServerStatus {
     CREATED = 'CREATED',

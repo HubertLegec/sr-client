@@ -7,7 +7,8 @@ import {Button, ButtonToolbar, Col, FormControl, Grid, ListGroup, Panel, Row} fr
 import {bindActionCreators} from "redux";
 import * as StartActions from "../actions/start";
 import {ServerRow} from "../components/ServerRow";
-import {WebsocketConnection} from "../websockets/WebsocketConnection";
+import {WebsocketConnection} from "../utils/WebsocketConnection";
+import {Link} from "react-router-dom";
 
 interface StartPageDataProps {
     username: string;
@@ -27,6 +28,7 @@ export class StartPageUI extends React.Component<StartPageProps, StartPageState>
     render() {
         const {username, servers, actions} = this.props;
         const {addServer, removeServer, setUsername} = actions;
+        const allConnected = !_.isEmpty(servers) && _.every(servers, s => s.status === ServerStatus.CONNECTED);
         return <Grid>
             <Row className="show-grid">
                 <Col md={6} mdPush={6}>
@@ -51,7 +53,10 @@ export class StartPageUI extends React.Component<StartPageProps, StartPageState>
             </Row>
             <Row className="show-grid">
                 <ButtonToolbar>
-                    <Button bsStyle="primary" onClick={() => this.connectToServers()}>Connect</Button>
+                    <Button disabled={_.isEmpty(username)}
+                            bsStyle="primary"
+                            onClick={() => this.connectToServers()}>Connect</Button>
+                    {allConnected && <Button><Link to={"/files"}>Files</Link></Button>}
                 </ButtonToolbar>
             </Row>
         </Grid>;
@@ -88,7 +93,7 @@ function mapStateToProps(state: RootState): StartPageDataProps {
 
 function mapDispatchToProps(dispatch): StartPageEventProps {
     return {
-        actions: bindActionCreators(StartActions as any, dispatch),
+        actions: bindActionCreators(StartActions, dispatch),
     };
 }
 
