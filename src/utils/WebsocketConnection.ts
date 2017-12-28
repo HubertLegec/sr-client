@@ -22,6 +22,11 @@ export class WebsocketConnection {
         this.socket.on(event, callback);
     }
 
+    emit(eventName: string, args: any) {
+        console.log(`Emit ${eventName} to server #${this.serverId}`);
+        this.socket.emit(eventName, args);
+    }
+
     connect() {
         console.log(`Connecting to server #${this.serverId}`);
         this.socket.connect();

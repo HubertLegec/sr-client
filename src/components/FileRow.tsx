@@ -26,7 +26,7 @@ export class FileRow extends React.Component<FileRowProps, FileRowState> {
 
     render() {
         const {isNewElement} = this.props;
-        return <ListGroupItem>
+        return <ListGroupItem href="#" disabled={isNewElement}>
             {isNewElement ? this.renderNew() : this.renderExisting()}
         </ListGroupItem>;
     }

@@ -5,5 +5,8 @@ export interface File {
 }
 
 export interface Record {
-    id: number;
+    id?: number;
+    serverId?: number;
+    filename?: string;
+    content: string;
 }

@@ -107,7 +107,8 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
         const server: ServerDef = {
             address: this.state.address,
             port: this.state.port,
-            status: ServerStatus.CREATED
+            status: ServerStatus.CREATED,
+            connection: undefined
         };
         this.setState({
             address: undefined,

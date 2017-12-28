@@ -15,18 +15,17 @@ export interface ServerDef {
     address: string;
     port: string;
     status: ServerStatus;
+    connection: WebsocketConnection;
 }
 
 export interface StartStoreState {
     username: string;
     servers: ServerDef[];
-    websocketConnections: WebsocketConnection[];
 }
 
 const initialState = {
     username: undefined,
-    servers: [],
-    websocketConnections: []
+    servers: []
 };
 
 export default handleActions<StartStoreState, any>({
@@ -61,16 +60,21 @@ export default handleActions<StartStoreState, any>({
     },
 
     [Actions.ADD_WEBSOCKET_CONNECTION]: (state, action) => {
-        const newConnection: WebsocketConnection = action.payload;
+        const connection: WebsocketConnection = action.payload;
+        const id = connection.id;
         return _.assign({}, state, {
-            websocketConnections: [...state.websocketConnections, newConnection]
+            servers: _.chain(state.servers).map(s => {
+                return s.id === id ? _.assign({}, s, {connection}) : s;
+            }).value()
         })
     },
 
     [Actions.DELETE_WEBSOCKET_CONNECTION]: (state, action) => {
         const id = action.payload;
         return _.assign({}, state, {
-            websocketConnections: _.filter(state.websocketConnections, c => c.id !== id)
+            servers: _.chain(state.servers).map(s => {
+                return s.id === id ? _.assign({}, s, {connection: undefined}) : s;
+            }).value()
         })
     }
 }, initialState);

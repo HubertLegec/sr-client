@@ -38,8 +38,8 @@ ReactDOM.render(
             <ConnectedRouter history={history}>
                 <Switch>
                     <Route path="/" exact component={StartPage}/>
-                    <Route path="/files" component={FileListPage}/>
-                    <Route path="/files/:fileName" component={FilePage}/>
+                    <Route path="/files" exact component={FileListPage}/>
+                    <Route path="/files/:serverId/:filename" component={FilePage}/>
                 </Switch>
             </ConnectedRouter>
         </App>

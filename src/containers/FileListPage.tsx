@@ -8,15 +8,18 @@ import {ServerFiles} from "../components/ServerFiles";
 import {File} from "../types/dtos";
 import {ServerDef} from "../reducers/start";
 import * as FileListActions from "../actions/fileList";
-import {createFileForServer, fetchFilesForServers} from "../utils/endpoints";
+import {createFileForServer, deleteFileForServer, fetchFilesForServers} from "../utils/endpoints";
+import {push} from "react-router-redux";
 
 interface FileListPageDataProps {
-    files: {[server: number]: File[]},
+    files: {[server: number]: File[]};
     servers: ServerDef[];
+    username: string;
 }
 
 interface FileListPageEventProps {
-    actions: typeof FileListActions
+    actions: typeof FileListActions;
+    onFileClick: (file: File) => void;
 }
 
 type FileListPageProps = FileListPageDataProps & FileListPageEventProps;
@@ -26,10 +29,10 @@ interface FileListPageState {}
 export class FileListPageUI extends React.Component<FileListPageProps, FileListPageState> {
 
     componentDidMount() {
-        const {servers, files, actions} = this.props;
+        const {servers, files, actions, username} = this.props;
         const loadedServers = _.keys(files);
         if (!_.isEmpty(servers) && _.isEmpty(loadedServers)) {
-            fetchFilesForServers(servers, actions);
+            fetchFilesForServers(servers, username, actions);
         }
     }
 
@@ -48,34 +51,37 @@ export class FileListPageUI extends React.Component<FileListPageProps, FileListP
     }
 
     private renderFileList() {
-        const {files} = this.props;
+        const {files, onFileClick} = this.props;
         const servers = _.keys(files);
         return <PanelGroup>
-            {_.map(servers, (s: number, idx) =>
+            {_.map(servers, (s, idx) =>
                 <ServerFiles key={idx}
-                             server={_.toNumber(s)}
+                             server={this.findServerById(s)}
                              eventKey={idx}
                              files={files[s]}
-                             onClick={f => this.onFileClick(f)}
+                             onClick={onFileClick}
                              onRemoveClick={f => this.onRemoveFile(f)}
                              onCreateClick={f => this.onCreateClick(f)}/>
             )}
         </PanelGroup>
     }
 
-    private onFileClick(file: File) {
-
+    private findServerById(serverId: string): ServerDef {
+        const {servers} = this.props;
+        const id = _.toNumber(serverId);
+        return _.find(servers, s => s.id === id);
     }
 
     private onRemoveFile(file: File) {
-
+        const {servers, actions, username} = this.props;
+        const server = _.find(servers, s => s.id === file.serverId);
+        deleteFileForServer(server, username, file, actions);
     }
 
     private onCreateClick(file: File) {
-        const {servers, actions} = this.props;
-        console.log('xxx', _.cloneDeep(file), _.cloneDeep(servers));
+        const {servers, actions, username} = this.props;
         const server = _.find(servers, s => s.id === file.serverId);
-        createFileForServer(server, file, actions);
+        createFileForServer(server, username, file, actions);
     }
 
 }
@@ -84,13 +90,17 @@ function mapStateToProps(state: RootState): FileListPageDataProps {
     const {fileList, start} = state;
     return {
         files: fileList,
-        servers: start.servers
+        servers: start.servers,
+        username: start.username
     };
 }
 
 function mapDispatchToProps(dispatch): FileListPageEventProps {
     return {
-        actions: bindActionCreators(FileListActions, dispatch)
+        actions: bindActionCreators(FileListActions, dispatch),
+        onFileClick(file: File) {
+            dispatch(push(`files/${file.serverId}/${file.name}`))
+        }
     };
 }
 
