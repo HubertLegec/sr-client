@@ -45,7 +45,7 @@ export class RecordRow extends React.Component<RecordRowProps, RecordRowState> {
             </Col>
             <Col xs={2} md={2}>
                 <Button onClick={() => onEdit(record)}>
-                    <Glyphicon glyph="glyphicon glyphicon-remove-sign"/>
+                    <Glyphicon glyph="glyphicon glyphicon-edit"/>
                 </Button>
             </Col>
             <Col xs={2} md={2}>
