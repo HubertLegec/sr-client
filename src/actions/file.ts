@@ -1,7 +1,10 @@
 import {createAction} from "redux-actions";
 import * as Actions from '../constants/actions';
 import {Record} from "../types/dtos";
+import {RecordStatus} from "../types/enumerates";
 
-export const recordsForFileFetched = createAction<Record[]>(Actions.RECORDS_FOR_FILE_FETCHED);
-export const newRecordForFile = createAction<Record>(Actions.NEW_RECORD_FOR_FILE);
-export const recordForFileRemoved = createAction<number>(Actions.RECORD_FOR_FILE_REMOVED);
+export const recordsForFileFetched = createAction<Record[]>(Actions.FILE_RECORDS_FETCHED);
+export const fileRecordCreated = createAction<Record>(Actions.FILE_RECORD_CREATED);
+export const fileRecordRemoved = createAction<number>(Actions.FILE_RECORD_REMOVED);
+export const fileRecordEdited = createAction<Record>(Actions.FILE_RECORD_EDITED);
+export const fileRecordStatusChanged = createAction<{recordId: number, newStatus: RecordStatus}>(Actions.FILE_RECORD_STATUS_CHANGED);

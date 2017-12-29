@@ -1,7 +1,8 @@
 import * as _ from "lodash";
 import * as React from "react";
-import {Button, Col, Glyphicon, ListGroupItem, Row, FormControl} from "react-bootstrap";
+import {Col, ListGroupItem, Row, FormControl} from "react-bootstrap";
 import {File} from "../types/dtos";
+import {GlyphButton} from "./GlyphButton";
 
 interface FileRowProps {
     isNewElement?: boolean;
@@ -40,9 +41,8 @@ export class FileRow extends React.Component<FileRowProps, FileRowState> {
                 </FormControl.Static>
             </Col>
             <Col xs={2} md={2}>
-                <Button onClick={() => onRemove(file)}>
-                    <Glyphicon glyph="glyphicon glyphicon-remove-sign"/>
-                </Button>
+                <GlyphButton glyphName="glyphicon-trash"
+                             onClick={() => onRemove(file)}/>
             </Col>
         </Row>;
     }
@@ -56,9 +56,9 @@ export class FileRow extends React.Component<FileRowProps, FileRowState> {
                              onChange={e => this.onFileNameChange(e)}/>
             </Col>
             <Col xs={2} md={2}>
-                <Button disabled={_.isEmpty(this.state.filename)} onClick={() => this.onCreateNewFile()}>
-                    <Glyphicon glyph="glyphicon glyphicon-ok-sign"/>
-                </Button>
+                <GlyphButton glyphName="glyphicon-save"
+                             disabled={_.isEmpty(this.state.filename)}
+                             onClick={() => this.onCreateNewFile()}/>
             </Col>
         </Row>;
     }

@@ -1,3 +1,4 @@
+import {RecordStatus} from "./enumerates";
 
 export interface File {
     name: string;
@@ -9,4 +10,5 @@ export interface Record {
     serverId?: number;
     filename?: string;
     content: string;
+    status: RecordStatus
 }

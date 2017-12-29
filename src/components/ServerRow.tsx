@@ -1,7 +1,8 @@
 import * as _ from "lodash";
 import * as React from "react";
 import {ServerDef, ServerStatus} from "../reducers/start";
-import {Button, Col, FormControl, Glyphicon, ListGroupItem, Row} from "react-bootstrap";
+import {Col, FormControl, Glyphicon, ListGroupItem, Row} from "react-bootstrap";
+import {GlyphButton} from "./GlyphButton";
 
 interface ServerRowProps {
     isNewElement?: boolean;
@@ -51,9 +52,9 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
                              onChange={e => this.onChangeInput("port", e)}/>
             </Col>
             <Col xs={2} md={2}>
-                <Button disabled={_.isEmpty(this.state.port)} onClick={() => this.onSaveServer()}>
-                    <Glyphicon glyph="glyphicon glyphicon-ok-sign"/>
-                </Button>
+                <GlyphButton glyphName="glyphicon-save"
+                             disabled={_.isEmpty(this.state.port)}
+                             onClick={() => this.onSaveServer()}/>
             </Col>
         </Row>;
     }
@@ -75,9 +76,8 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
                 {this.renderStatusImage()}
             </Col>
             <Col xs={2} md={2}>
-                <Button onClick={() => onRemove(server)}>
-                    <Glyphicon glyph="glyphicon glyphicon-remove-sign"/>
-                </Button>
+                <GlyphButton glyphName="glyphicon-trash"
+                             onClick={() => onRemove(server)}/>
             </Col>
         </Row>;
     }

@@ -47,16 +47,21 @@ export function postJson(path: string, userId: string, body?: any): Promise<any>
 }
 
 export function putJson(path: string, userId: string, body?: any): Promise<any> {
-    return fetch(path,
-        {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'userId': userId
-            } as any,
-            method: "PUT",
-            body: JSON.stringify(body)
-        }).then(result => result.json());
+    return fetch(path, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'userId': userId
+        } as any,
+        method: "PUT",
+        body: JSON.stringify(body)
+    }).then(result => {
+        if (result.ok) {
+            return result;
+        } else {
+            console.error(`Error occured during PUT operation, status: ${result.status}, ${result.json()}`)
+        }
+    }).then(result => result.json());
 }
 
 export function deleteJson(path: string, userId: string): Promise<any> {

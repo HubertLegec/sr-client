@@ -8,8 +8,12 @@ import {Grid, ListGroup, Panel} from "react-bootstrap";
 import * as FileActions from "../actions/file";
 import {bindActionCreators} from "redux";
 import {ServerDef} from "../reducers/start";
-import {createRecordForFile, fetchRecordsForFile, removeRecordForFile} from "../utils/endpoints";
-import {newRecordForFile} from "../actions/file";
+import {
+    createRecordForFile, editRecordForFile, fetchRecordsForFile, lockRecordForFile,
+    removeRecordForFile, unlockRecordForFile
+} from "../utils/endpoints";
+import {RecordStatus} from "../types/enumerates";
+import {onRecordStateChange} from "../utils/eventListeners";
 
 interface FilePageDataProps {
     records: Record[];
@@ -37,22 +41,9 @@ export class FilePageUI extends React.Component<FilePageProps, FilePageState> {
 
     componentDidMount() {
         const {actions, username} = this.props;
-        const {newRecordForFile, recordForFileRemoved} = actions;
         const server = this.getServer();
         const connection = server.connection;
-        connection.addListener('record_state_change', event => {
-            const eventType = event.eventType;
-            switch (eventType) {
-                case 'RECORD_CREATED':
-                    const record = event.record;
-                    newRecordForFile(record);
-                    return;
-                case 'RECORD_REMOVED':
-                    const recId = event.recordId;
-                    recordForFileRemoved(recId);
-                    return;
-            }
-        });
+        connection.addListener('record_state_change', event => onRecordStateChange(event, actions));
         connection.emit('file_state_change', {
            eventType: 'OPEN_FILE',
            file: this.filename,
@@ -80,8 +71,9 @@ export class FilePageUI extends React.Component<FilePageProps, FilePageState> {
                     {_.map(records, r =>
                         <RecordRow key={r.id}
                                    record={r}
-                                   onEdit={r => this.onEditRecord(r)}
-                                   onRemove={r => this.onRemoveRecord(r)}/>
+                                   onSubmitEdit={r => this.onSubmitEditRecord(r)}
+                                   onRemove={r => this.onRemoveRecord(r)}
+                                   onStatusChange={(r, s) => this.onRecordStatusChange(r, s)}/>
                     )}
                     <RecordRow isNewItem={true}
                                onCreate={r => this.onCreateNewRecord(r)}/>
@@ -113,8 +105,25 @@ export class FilePageUI extends React.Component<FilePageProps, FilePageState> {
         removeRecordForFile(this.getServer(), username, record, actions);
     }
 
-    private onEditRecord(record: Record) {
+    private onSubmitEditRecord(record: Record) {
+        const {actions, username} = this.props;
+        editRecordForFile(this.getServer(), username, record, actions);
+    }
 
+    private onRecordStatusChange(record: Record, newStatus: RecordStatus) {
+        const {username, actions} = this.props;
+        const {fileRecordStatusChanged} = actions;
+        switch (newStatus) {
+            case RecordStatus.EDITING:
+                fileRecordStatusChanged({recordId: record.id, newStatus: RecordStatus.WAITING});
+                lockRecordForFile(this.getServer(), username, record);
+                return;
+            case RecordStatus.AVAILABLE:
+                unlockRecordForFile(this.getServer(), username, record);
+                return;
+            default:
+                throw new Error(`Unsupported record status: ` + newStatus);
+        }
     }
 }
 
