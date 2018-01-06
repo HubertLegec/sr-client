@@ -9,6 +9,8 @@ import * as StartActions from "../actions/start";
 import {ServerRow} from "../components/ServerRow";
 import {WebsocketConnection} from "../utils/WebsocketConnection";
 import {Link} from "react-router-dom";
+import {notificationDispatcher} from "../index";
+import {NotificationLevel} from "../utils/NotificationsDispatcher";
 
 interface StartPageDataProps {
     username: string;
@@ -72,7 +74,14 @@ export class StartPageUI extends React.Component<StartPageProps, StartPageState>
                 return s;
             })
             .map(s => {
-                const c = new WebsocketConnection(s, username, updateServerState);
+                const c = new WebsocketConnection(s, username, () => {
+                    updateServerState({id: s.id, status: ServerStatus.CONNECTED});
+                    notificationDispatcher.publishNotification(
+                        "New connection",
+                        `Server #${s.id} connected`,
+                        NotificationLevel.SUCCESS
+                    )
+                });
                 return c;
             })
             .map(c => {
@@ -93,7 +102,7 @@ function mapStateToProps(state: RootState): StartPageDataProps {
 
 function mapDispatchToProps(dispatch): StartPageEventProps {
     return {
-        actions: bindActionCreators(StartActions, dispatch),
+        actions: bindActionCreators(StartActions, dispatch)
     };
 }
 

@@ -7,14 +7,14 @@ export class WebsocketConnection {
     private serverId: number;
 
     constructor(server: ServerDef, username: string,
-                updateServerState: (payload: {id: number, status: ServerStatus}) => void) {
+                onConnected: () => void) {
         this.username = username;
         this.serverId = server.id;
         this.socket = io(`http://${server.address}:${server.port}`, {autoConnect: false});
         this.socket.on('connect', () => {
             console.log(`Server #${this.serverId} connected`);
             this.socket.emit('authorize', {userId: this.username});
-            updateServerState({id: this.serverId, status: ServerStatus.CONNECTED});
+            onConnected();
         })
     }
 

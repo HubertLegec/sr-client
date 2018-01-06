@@ -12,6 +12,8 @@ import {applyMiddleware, createStore, Store} from "redux";
 import rootReducer, {RootState} from "./reducers/index";
 import {App} from "./containers/App";
 import {NavBar} from "./components/NavBar";
+import {NotificationsDispatcher} from "./utils/NotificationsDispatcher";
+import {Notifications} from "./components/Notifications";
 
 function configureStore(history, initialState?: RootState) {
     let middleware = applyMiddleware(routerMiddleware(history));
@@ -28,12 +30,15 @@ function configureStore(history, initialState?: RootState) {
     return store;
 }
 
+export const notificationDispatcher = new NotificationsDispatcher();
+
 const history = createHistory();
 const store = configureStore(history);
 
 ReactDOM.render(
     <Provider store={store}>
         <App>
+            <Notifications/>
             <NavBar/>
             <ConnectedRouter history={history}>
                 <Switch>

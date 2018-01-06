@@ -14,6 +14,8 @@ import {
 } from "../utils/endpoints";
 import {RecordStatus} from "../types/enumerates";
 import {onRecordStateChange} from "../utils/eventListeners";
+import {notificationDispatcher} from "../index";
+import {NotificationLevel} from "../utils/NotificationsDispatcher";
 
 interface FilePageDataProps {
     records: Record[];
@@ -43,7 +45,10 @@ export class FilePageUI extends React.Component<FilePageProps, FilePageState> {
         const {actions, username} = this.props;
         const server = this.getServer();
         const connection = server.connection;
-        connection.addListener('record_state_change', event => onRecordStateChange(event, actions));
+        connection.addListener('record_state_change', event => {
+            onRecordStateChange(event, actions);
+            notificationDispatcher.publishNotification("Record state change", event.eventType, NotificationLevel.INFO)
+        });
         connection.emit('file_state_change', {
            eventType: 'OPEN_FILE',
            file: this.filename,
