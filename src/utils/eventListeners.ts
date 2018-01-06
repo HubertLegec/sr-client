@@ -25,5 +25,9 @@ export function onRecordStateChange(event: any, actions: typeof FileActions) {
             const unlockedRecordId = event.recordId;
             fileRecordStatusChanged({recordId: unlockedRecordId, newStatus: RecordStatus.AVAILABLE});
             return;
+        case 'LOCK_REJECTED':
+            const requestedRecordId = event.recordId;
+            fileRecordStatusChanged({recordId: requestedRecordId, newStatus: RecordStatus.AVAILABLE});
+            return;
     }
 }

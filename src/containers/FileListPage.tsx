@@ -29,9 +29,8 @@ interface FileListPageState {}
 export class FileListPageUI extends React.Component<FileListPageProps, FileListPageState> {
 
     componentDidMount() {
-        const {servers, files, actions, username} = this.props;
-        const loadedServers = _.keys(files);
-        if (!_.isEmpty(servers) && _.isEmpty(loadedServers)) {
+        const {servers, actions, username} = this.props;
+        if (!_.isEmpty(servers)) {
             fetchFilesForServers(servers, username, actions);
         }
     }
