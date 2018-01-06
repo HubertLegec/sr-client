@@ -4,6 +4,8 @@ import * as FileListActions from "../actions/fileList";
 import * as FileActions from "../actions/file";
 import {deleteJson, getJson, postJson, putJson} from "./fetchJson";
 import {File, Record} from "../types/dtos";
+import {notificationDispatcher} from "../index";
+import {NotificationLevel} from "./NotificationsDispatcher";
 
 export function fetchFilesForServers(servers: ServerDef[], userId: string, actions: typeof FileListActions) {
     const {filesForServerFetched} = actions;
@@ -34,8 +36,13 @@ export function deleteFileForServer(server: ServerDef, userId: string, file: Fil
     console.log(`Delete file ${file.name} for server#${server.id}`);
     const url = `http://${server.address}:${server.port}/files/${file.name}`;
     deleteJson(url, userId)
-        .then(json =>
-        deleteFileForServer({server: server.id, file})
+        .then(resp => {
+            if (resp.status === 200) {
+                deleteFileForServer({server: server.id, file})
+            } else {
+                notificationDispatcher.publishNotification("Delete failed", resp.json.message, NotificationLevel.ERROR)
+            }
+        }
     );
 }
 
@@ -67,9 +74,13 @@ export function removeRecordForFile(server: ServerDef, userId: string, record: R
     console.log(`Removing record #${record.id} for file ${record.filename} and server #${server.id}`);
     const url = `http://${server.address}:${server.port}/files/${record.filename}/records/${record.id}`;
     deleteJson(url, userId)
-        .then(json => {
-            console.log(`Record #${record.id} removed successfully`);
-            fileRecordRemoved(record.id);
+        .then(resp => {
+            if (resp.status === 200) {
+                console.log(`Record #${record.id} removed successfully`);
+                fileRecordRemoved(record.id);
+            } else {
+                notificationDispatcher.publishNotification("Delete failed", resp.json.message, NotificationLevel.ERROR);
+            }
         });
 }
 

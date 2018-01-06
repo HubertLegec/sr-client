@@ -30,7 +30,7 @@ export default handleActions<FileListStoreState, any>({
         const file = action.payload.file;
         const server = action.payload.server;
         return _.assign({}, state, {
-            [server]: _.filter(state[server], f => f.serverId !== file.serverId)
+            [server]: _.filter(state[server], f => f.name !== file.name)
         });
     }
 }, initialState);

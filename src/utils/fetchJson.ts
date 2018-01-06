@@ -1,5 +1,10 @@
 import * as _ from "lodash";
 
+interface ResponseWithStatus {
+    json: any;
+    status: number;
+}
+
 export function getJson(path: string, usedId: string, queryParams?: { [key: string]: any }): Promise<any> {
     const queryUrl = getUrl(path, queryParams);
     return fetch(queryUrl, {
@@ -64,11 +69,14 @@ export function putJson(path: string, userId: string, body?: any): Promise<any> 
     }).then(result => result.json());
 }
 
-export function deleteJson(path: string, userId: string): Promise<any> {
+export function deleteJson(path: string, userId: string): Promise<ResponseWithStatus> {
     return fetch(path, {
         headers: {
             'userId': userId
         },
         method: 'DELETE'
-    }).then(result => result.json());
+    }).then(result => ({
+        json: result.json(),
+        status: result.status
+    }));
 }
