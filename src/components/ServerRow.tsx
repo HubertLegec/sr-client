@@ -23,8 +23,8 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
     constructor(props: ServerRowProps) {
         super(props);
         this.state = {
-            address: undefined,
-            port: undefined
+            address: 'localhost',
+            port: '4200'
         }
     }
 
@@ -110,12 +110,6 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
             status: ServerStatus.CREATED,
             connection: undefined
         };
-        this.setState({
-            address: undefined,
-            port: undefined
-        });
-        this.addresInputRef.text = undefined;
-        this.portInputRef.text = undefined;
         onCreate(server);
     }
 }
