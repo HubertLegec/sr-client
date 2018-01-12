@@ -14,17 +14,20 @@ interface ServerRowProps {
 interface ServerRowState {
     address: string;
     port: string;
+    websocketPort: string;
 }
 
 export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
     private addresInputRef;
     private portInputRef;
+    private webPortInputRef;
 
     constructor(props: ServerRowProps) {
         super(props);
         this.state = {
             address: 'localhost',
-            port: '4200'
+            port: '4200',
+            websocketPort: '4200'
         }
     }
 
@@ -37,19 +40,26 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
 
     private renderNew() {
         return <Row className="show-grid">
-            <Col xs={5} md={5}>
+            <Col xs={4} md={4}>
                 <FormControl type="text"
                              placeholder="Server address"
                              value={this.state.address}
                              inputRef={ref => {this.addresInputRef = ref}}
                              onChange={e => this.onChangeInput("address", e)}/>
             </Col>
-            <Col xs={5} md={5}>
+            <Col xs={3} md={3}>
                 <FormControl type="text"
                              placeholder="Server port"
-                             value={this.state.port}
+                             value={this.state.websocketPort}
                              inputRef={ref => {this.portInputRef = ref}}
                              onChange={e => this.onChangeInput("port", e)}/>
+            </Col>
+            <Col xs={3} md={3}>
+                <FormControl type="text"
+                             placeholder="Websocket port"
+                             value={this.state.port}
+                             inputRef={ref => {this.webPortInputRef = ref}}
+                             onChange={e => this.onChangeInput("websocketPort", e)}/>
             </Col>
             <Col xs={2} md={2}>
                 <GlyphButton glyphName="glyphicon-save"
@@ -67,9 +77,14 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
                     {server.address}
                 </FormControl.Static>
             </Col>
-            <Col xs={4} md={4}>
+            <Col xs={2} md={2}>
                 <FormControl.Static>
                     {server.port}
+                </FormControl.Static>
+            </Col>
+            <Col xs={2} md={2}>
+                <FormControl.Static>
+                    {server.websocketPort}
                 </FormControl.Static>
             </Col>
             <Col xs={2} md={2}>
@@ -107,6 +122,7 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
         const server: ServerDef = {
             address: this.state.address,
             port: this.state.port,
+            websocketPort: this.state.websocketPort,
             status: ServerStatus.CREATED,
             connection: undefined
         };

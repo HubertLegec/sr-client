@@ -14,6 +14,7 @@ export interface ServerDef {
     id?: number;
     address: string;
     port: string;
+    websocketPort: string;
     status: ServerStatus;
     connection: WebsocketConnection;
 }
