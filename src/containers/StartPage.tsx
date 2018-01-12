@@ -8,9 +8,9 @@ import {bindActionCreators} from "redux";
 import * as StartActions from "../actions/start";
 import {ServerRow} from "../components/ServerRow";
 import {WebsocketConnection} from "../utils/WebsocketConnection";
-import {Link} from "react-router-dom";
 import {notificationDispatcher} from "../index";
 import {NotificationLevel} from "../utils/NotificationsDispatcher";
+import {push} from "react-router-redux";
 
 interface StartPageDataProps {
     username: string;
@@ -18,7 +18,8 @@ interface StartPageDataProps {
 }
 
 interface StartPageEventProps {
-    actions: typeof StartActions
+    actions: typeof StartActions;
+    onFilesButtonClick: () => void;
 }
 
 type StartPageProps = StartPageDataProps & StartPageEventProps;
@@ -28,7 +29,7 @@ interface StartPageState {
 
 export class StartPageUI extends React.Component<StartPageProps, StartPageState> {
     render() {
-        const {username, servers, actions} = this.props;
+        const {username, servers, actions, onFilesButtonClick} = this.props;
         const {addServer, removeServer, setUsername} = actions;
         const allConnected = !_.isEmpty(servers) && _.every(servers, s => s.status === ServerStatus.CONNECTED);
         return <Grid>
@@ -58,7 +59,7 @@ export class StartPageUI extends React.Component<StartPageProps, StartPageState>
                     <Button disabled={_.isEmpty(username)}
                             bsStyle="primary"
                             onClick={() => this.connectToServers()}>Connect</Button>
-                    {allConnected && <Button><Link to={"/files"}>Files</Link></Button>}
+                    {allConnected && <Button onClick={onFilesButtonClick}>Files</Button>}
                 </ButtonToolbar>
             </Row>
         </Grid>;
@@ -102,7 +103,10 @@ function mapStateToProps(state: RootState): StartPageDataProps {
 
 function mapDispatchToProps(dispatch): StartPageEventProps {
     return {
-        actions: bindActionCreators(StartActions, dispatch)
+        actions: bindActionCreators(StartActions, dispatch),
+        onFilesButtonClick() {
+            dispatch(push("/files"))
+        }
     };
 }
 
