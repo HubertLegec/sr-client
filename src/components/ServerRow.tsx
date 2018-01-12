@@ -50,14 +50,14 @@ export class ServerRow extends React.Component<ServerRowProps, ServerRowState> {
             <Col xs={3} md={3}>
                 <FormControl type="text"
                              placeholder="Server port"
-                             value={this.state.websocketPort}
+                             value={this.state.port}
                              inputRef={ref => {this.portInputRef = ref}}
                              onChange={e => this.onChangeInput("port", e)}/>
             </Col>
             <Col xs={3} md={3}>
                 <FormControl type="text"
                              placeholder="Websocket port"
-                             value={this.state.port}
+                             value={this.state.websocketPort}
                              inputRef={ref => {this.webPortInputRef = ref}}
                              onChange={e => this.onChangeInput("websocketPort", e)}/>
             </Col>
