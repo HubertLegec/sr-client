@@ -13,7 +13,7 @@ export class NotificationsDispatcher {
     private handlers: NotificationHandler[] = [];
 
     publishNotification(title: string, message: string, level: NotificationLevel) {
-        console.log('publish notification');
+        console.log(`Publish notification, title:  ${title}, message: ${message}`);
         const notification = {
             title,
             level,
