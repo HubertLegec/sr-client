@@ -26,9 +26,13 @@ export function createFileForServer(server: ServerDef, userId: string, file: Fil
     const url = `http://${server.address}:${server.port}/files`;
     postJson(url, userId, {
         filename: file.name
-    }).then(json =>
-        newFileForServer({server: server.id, file})
-    );
+    }).then(resp => {
+        if (resp.status === 200) {
+            newFileForServer({server: server.id, file});
+        } else {
+            notificationDispatcher.publishNotification("Create file failed", resp.json.message, NotificationLevel.ERROR);
+        }
+    });
 }
 
 export function deleteFileForServer(server: ServerDef, userId: string, file: File, actions: typeof FileListActions) {
@@ -42,8 +46,7 @@ export function deleteFileForServer(server: ServerDef, userId: string, file: Fil
             } else {
                 notificationDispatcher.publishNotification("Delete failed", resp.json.message, NotificationLevel.ERROR)
             }
-        }
-    );
+        });
 }
 
 export function fetchRecordsForFile(server: ServerDef, userId: string, filename: string, actions: typeof FileActions) {
@@ -62,11 +65,15 @@ export function createRecordForFile(server: ServerDef, userId: string, filename:
     const url = `http://${server.address}:${server.port}/files/${filename}/records`;
     postJson(url, userId, {
         content: record.content
-    }).then(json => {
-            console.log(`Record #${json.recordId} created successfully`);
-            record.id = json.recordId;
+    }).then(resp => {
+        if (resp.status === 200) {
+            console.log(`Record #${resp.json.recordId} created successfully`);
+            record.id = resp.json.recordId;
             fileRecordCreated(record);
-        });
+        } else {
+            notificationDispatcher.publishNotification("Create record failed", resp.json.message, NotificationLevel.ERROR);
+        }
+    });
 }
 
 export function removeRecordForFile(server: ServerDef, userId: string, record: Record, actions: typeof FileActions) {
@@ -90,11 +97,15 @@ export function editRecordForFile(server: ServerDef, userId: string, record: Rec
     const url = `http://${server.address}:${server.port}/files/${record.filename}/records/${record.id}`;
     putJson(url, userId, {
         content: record.content
-    }).then( json => {
-           console.log(`Record #${record.id} edited successfully`);
-           fileRecordEdited(record);
-           unlockRecordForFile(server, userId, record);
-        });
+    }).then(resp => {
+        if (resp.status === 200) {
+            console.log(`Record #${record.id} edited successfully`);
+            fileRecordEdited(record);
+            unlockRecordForFile(server, userId, record);
+        } else {
+            notificationDispatcher.publishNotification("Update failed", resp.json.message, NotificationLevel.ERROR);
+        }
+    });
 }
 
 export function lockRecordForFile(server: ServerDef, userId: string, record: Record) {
