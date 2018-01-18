@@ -3,6 +3,7 @@ import {RecordStatus} from "./enumerates";
 export interface File {
     name: string;
     serverId?: number;
+    isOpened?: boolean;
 }
 
 export interface Record {

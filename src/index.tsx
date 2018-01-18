@@ -5,7 +5,6 @@ import {Route, Switch} from 'react-router';
 import createHistory from 'history/createBrowserHistory';
 import {StartPage} from "./containers/StartPage";
 import {FileListPage} from './containers/FileListPage';
-import {FilePage} from "./containers/FilePage";
 import {routerMiddleware, ConnectedRouter} from 'react-router-redux';
 import {composeWithDevTools} from "redux-devtools-extension";
 import {applyMiddleware, createStore, Store} from "redux";
@@ -44,7 +43,6 @@ ReactDOM.render(
                 <Switch>
                     <Route path="/" exact component={StartPage}/>
                     <Route path="/files" exact component={FileListPage}/>
-                    <Route path="/files/:serverId/:filename" component={FilePage}/>
                 </Switch>
             </ConnectedRouter>
         </App>

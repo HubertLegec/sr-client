@@ -6,11 +6,13 @@ import {ServerDef, ServerStatus} from "../reducers/start";
 import {Button, ButtonToolbar, Col, FormControl, Grid, ListGroup, Panel, Row} from "react-bootstrap";
 import {bindActionCreators} from "redux";
 import * as StartActions from "../actions/start";
+import * as FileListActions from "../actions/fileList";
 import {ServerRow} from "../components/ServerRow";
 import {WebsocketConnection} from "../utils/WebsocketConnection";
 import {notificationDispatcher} from "../index";
 import {NotificationLevel} from "../utils/NotificationsDispatcher";
 import {push} from "react-router-redux";
+import {onRecordStateChange} from "../utils/eventListeners";
 
 interface StartPageDataProps {
     username: string;
@@ -19,6 +21,7 @@ interface StartPageDataProps {
 
 interface StartPageEventProps {
     actions: typeof StartActions;
+    fileListActions: typeof FileListActions,
     onFilesButtonClick: () => void;
 }
 
@@ -66,7 +69,7 @@ export class StartPageUI extends React.Component<StartPageProps, StartPageState>
     }
 
     private connectToServers() {
-        const {servers, actions, username} = this.props;
+        const {servers, actions, username, fileListActions} = this.props;
         const {updateServerState, addWebsocketConnection} = actions;
         console.log('--- Connect to servers ---', _.cloneDeep(servers));
         servers
@@ -82,6 +85,10 @@ export class StartPageUI extends React.Component<StartPageProps, StartPageState>
                         `Server #${s.id} connected`,
                         NotificationLevel.SUCCESS
                     )
+                });
+                c.addListener('record_state_change', event => {
+                    onRecordStateChange(event, s, fileListActions);
+                    notificationDispatcher.publishNotification("Record state change", event.eventType, NotificationLevel.INFO)
                 });
                 return c;
             })
@@ -104,6 +111,7 @@ function mapStateToProps(state: RootState): StartPageDataProps {
 function mapDispatchToProps(dispatch): StartPageEventProps {
     return {
         actions: bindActionCreators(StartActions, dispatch),
+        fileListActions: bindActionCreators(FileListActions, dispatch),
         onFilesButtonClick() {
             dispatch(push("/files"))
         }

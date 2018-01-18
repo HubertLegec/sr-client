@@ -1,7 +1,6 @@
 import * as _ from "lodash";
 import {ServerDef} from "../reducers/start";
 import * as FileListActions from "../actions/fileList";
-import * as FileActions from "../actions/file";
 import {deleteJson, getJson, postJson, putJson} from "./fetchJson";
 import {File, Record} from "../types/dtos";
 import {notificationDispatcher} from "../index";
@@ -49,17 +48,21 @@ export function deleteFileForServer(server: ServerDef, userId: string, file: Fil
         });
 }
 
-export function fetchRecordsForFile(server: ServerDef, userId: string, filename: string, actions: typeof FileActions) {
+export function fetchRecordsForFile(server: ServerDef, userId: string, filename: string, actions: typeof FileListActions) {
     const {recordsForFileFetched} = actions;
     console.log(`Fetching records for file ${filename}`);
     const url = `http://${server.address}:${server.port}/files/${filename}/records`;
     getJson(url, userId)
-        .then(json =>
-            recordsForFileFetched(json)
-        );
+        .then(json => {
+            const records = _.map(json, (r: Record)=> {
+                r.serverId = server.id;
+                return r;
+            });
+            recordsForFileFetched(records);
+        });
 }
 
-export function createRecordForFile(server: ServerDef, userId: string, filename: string, record: Record, actions: typeof FileActions) {
+export function createRecordForFile(server: ServerDef, userId: string, filename: string, record: Record, actions: typeof FileListActions) {
     const {fileRecordCreated} = actions;
     console.log(`Creating new record for file ${filename} and server #${server.id}`);
     const url = `http://${server.address}:${server.port}/files/${filename}/records`;
@@ -76,7 +79,7 @@ export function createRecordForFile(server: ServerDef, userId: string, filename:
     });
 }
 
-export function removeRecordForFile(server: ServerDef, userId: string, record: Record, actions: typeof FileActions) {
+export function removeRecordForFile(server: ServerDef, userId: string, record: Record, actions: typeof FileListActions) {
     const {fileRecordRemoved} = actions;
     console.log(`Removing record #${record.id} for file ${record.filename} and server #${server.id}`);
     const url = `http://${server.address}:${server.port}/files/${record.filename}/records/${record.id}`;
@@ -84,14 +87,14 @@ export function removeRecordForFile(server: ServerDef, userId: string, record: R
         .then(resp => {
             if (resp.status === 200) {
                 console.log(`Record #${record.id} removed successfully`);
-                fileRecordRemoved(record.id);
+                fileRecordRemoved(record);
             } else {
                 notificationDispatcher.publishNotification("Delete failed", resp.json.message, NotificationLevel.ERROR);
             }
         });
 }
 
-export function editRecordForFile(server: ServerDef, userId: string, record: Record, actions: typeof FileActions) {
+export function editRecordForFile(server: ServerDef, userId: string, record: Record, actions: typeof FileListActions) {
     const {fileRecordEdited} = actions;
     console.log(`Editing record #${record.id} for file ${record.filename} and server #${server.id}`);
     const url = `http://${server.address}:${server.port}/files/${record.filename}/records/${record.id}`;

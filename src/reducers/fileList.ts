@@ -32,5 +32,16 @@ export default handleActions<FileListStoreState, any>({
         return _.assign({}, state, {
             [server]: _.filter(state[server], f => f.name !== file.name)
         });
+    },
+
+    [Actions.FILE_CLICKED]: (state, action) => {
+        const filename = action.payload.filename;
+        const server = action.payload.server;
+        const files = _.cloneDeep(state[server]);
+        const file = _.find(files, f => f.name === filename);
+        file.isOpened = !file.isOpened;
+        return _.assign({}, state, {
+            [server]: files
+        })
     }
 }, initialState);

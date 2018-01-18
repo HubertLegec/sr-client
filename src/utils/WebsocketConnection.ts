@@ -32,11 +32,6 @@ export class WebsocketConnection {
         this.socket.connect();
     }
 
-    closeConnection() {
-        console.log(`Closing connecting with server #${this.serverId}`);
-        this.socket.close();
-    }
-
     get id(): number {
         return this.serverId;
     }
